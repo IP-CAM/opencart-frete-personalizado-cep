@@ -19,3 +19,4 @@ $_['button_remove'] = 'Remover';
 
 // Error
 $_['error_permission'] = 'Atenção: Você não possui permissão para modificar o módulo Frete Personalizado!';
+?>

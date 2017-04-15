@@ -1,12 +1,12 @@
 <?php
-/**
- * Módulo Frete Personalizado
- * Catalog/Model
- * @since 19/12/2016
- */
-class ModelExtensionShippingPersonalizado extends Model {
+/*
+	Módulo Frete Personalizado
+	Catalog/Model
+	Criado por Marlon em 06/05/2014
+*/
+class ModelShippingPersonalizado extends Model {
 	function getQuote($address) {
-		$this->load->language('extension/shipping/personalizado');
+		$this->language->load('shipping/personalizado');
 		
 		$status = false;
 		$title = $this->config->get('personalizado_titulo');
@@ -27,23 +27,14 @@ class ModelExtensionShippingPersonalizado extends Model {
 
 					$cep = (int)preg_replace ("/[^0-9]/", '', $address['postcode']);
 
-					$valorStatus = true;
-					$total = $this->cart->getSubTotal();
-					if ($frete['valor_min'] !== '' ) {
-						$valorStatus = ($total >= (float)$frete['valor_min']);
-					}
-					if ($frete['valor_max'] !== '') {
-						$valorStatus = $valorStatus && ($total <= (float)$frete['valor_max']);
-					}
-
-					if ($cep && $cep >= $min && $cep <= $max && $valorStatus) {
+					if ($cep && $cep >= $min && $cep <= $max) {
 						$status = true;
 						$quote_data[$i] = array(
 							'code'         => 'personalizado.' . $i,
 							'title'        => $frete['nome'],
 							'cost'         => $frete['valor'],
 							'tax_class_id' => 0,
-							'text'         => $this->currency->format($frete['valor'], $this->session->data['currency'])
+							'text'         => $this->currency->format($this->tax->calculate($frete['valor'], 0, $this->config->get('config_tax')))
 						);
 					} else {
 						$status = false;
@@ -72,3 +63,4 @@ class ModelExtensionShippingPersonalizado extends Model {
 		return $method_data;
 	}
 }
+?>
